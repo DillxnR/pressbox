@@ -14,15 +14,17 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+        for i in 0..<5 {
+            let newRecording = Recording(context: viewContext)
+            newRecording.dateCreated = Date().addingTimeInterval(-Double(i * 86400)) // Days ago
+            newRecording.title = "Sample Recording \(i+1)"
+            newRecording.transcript = "This is a sample transcript for recording \(i+1). It contains the full text transcribed from the audio recording."
+            newRecording.summary = "This is a sample summary for recording \(i+1). It contains the key points extracted from the transcript."
+            newRecording.duration = Double(60 * (i+1)) // Sample durations
         }
         do {
             try viewContext.save()
         } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
